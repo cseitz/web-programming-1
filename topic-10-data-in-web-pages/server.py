@@ -31,8 +31,8 @@ def get_index(name=None):
 
     # load the items
     db = dataset.connect('sqlite:///database.db')
-    table = db['notes']
-    items = [dict(item) for item in table.find(user=username)]
+    notes = db['notes']
+    items = [dict(item) for item in notes.find(user=username)]
     print(list(items))
 
     # save the session 
@@ -96,7 +96,6 @@ def post_login():
     # get the form information
     username = request.forms['username']
     password = request.forms['password']
-    favcolor = request.forms['favcolor']
 
     # get the profile for username
     profile = load_profile(username)
@@ -110,7 +109,7 @@ def post_login():
         session['username'] = username
 
         # save profile for the user
-        profile['favcolor'] = favcolor
+        profile['favcolor'] = 'blue'
         save_profile(profile)
 
         # save session
@@ -122,6 +121,75 @@ def post_login():
         save_session(session, response)
         redirect('/login')
 
+@get('/create_note')
+def get_create_note():
+    session = load_session(request)
+    # if not logged in, redirect to someplace
+    if not logged_in(session):
+        redirect("/login")
+
+    # get the username from session
+    username = session.get('username', 'guest')
+
+    save_session(session, response)
+    return template('create_note', name=username)
+
+@post('/create_note')
+def post_create_note():
+    # load the session
+    session = load_session(request)
+
+    # if not logged in, redirect to someplace
+    if not logged_in(session):
+        redirect("/login")
+
+    # get the username from session
+    username = session.get('username', 'guest')
+
+    # get the form information
+    note = request.forms['note']
+
+    # Store the new note
+    print("the new note is ", note)
+    item = {
+        "user":username, 
+        "note":note
+    }
+    db = dataset.connect('sqlite:///database.db')
+    notes = db['notes']
+    notes.insert(item)
+
+    # save session
+    save_session(session, response)
+    redirect('/index')
+
+@get('/delete/<id>')
+@get('/delete')
+def get_delete(id=None):
+    # load the session
+    session = load_session(request)
+
+    # if not logged in, redirect to someplace
+    if not logged_in(session):
+        redirect("/login")
+
+    # get the username from session
+    username = session.get('username', 'guest')
+
+    if not id:
+        id = request.params.get('id',None)
+
+    if not id:
+        redirect('/index')
+
+    print("delete ID = ",id)
+    db = dataset.connect('sqlite:///database.db')
+    notes = db['notes']
+    notes.delete(user=username, id=id)
+
+    # save session
+    save_session(session, response)
+    redirect('/index')
 
 debug(True)
 run(host='localhost', port=8068, reloader=True)

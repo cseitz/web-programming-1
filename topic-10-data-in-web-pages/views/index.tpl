@@ -1,11 +1,26 @@
 <html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet">
+</head>
 <body>
 <h2>Hello, {{name}}!</h2>
 <hr>
-<ul>
+<table>
 % for item in items:
-    <li>{{item['note']}}</li>
+    <tr>
+        <td>
+          {{item['note']}}
+        </td>
+        <td>
+          <a href="/delete/{{item['id']}}">
+            <span class="material-icons">delete</span>
+          </a>
+        </td>
+    </tr>
 % end
-</ul>
+</table>
+<hr/>
+<a href="/create_note">Create a new note...</a>
 </body>
 </html>
