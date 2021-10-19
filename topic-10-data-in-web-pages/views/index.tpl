@@ -13,6 +13,11 @@
           {{item['note']}}
         </td>
         <td>
+          <a href="/edit/{{item['id']}}">
+            <span class="material-icons">edit</span>
+          </a>
+        </td>
+        <td>
           <a href="/delete/{{item['id']}}">
             <span class="material-icons">delete</span>
           </a>

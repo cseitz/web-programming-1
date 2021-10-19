@@ -121,8 +121,8 @@ def post_login():
         save_session(session, response)
         redirect('/login')
 
-@get('/create_note')
-def get_create_note():
+@get('/create')
+def get_create():
     session = load_session(request)
     # if not logged in, redirect to someplace
     if not logged_in(session):
@@ -132,10 +132,10 @@ def get_create_note():
     username = session.get('username', 'guest')
 
     save_session(session, response)
-    return template('create_note', name=username)
+    return template('create', name=username)
 
-@post('/create_note')
-def post_create_note():
+@post('/create')
+def post_create():
     # load the session
     session = load_session(request)
 
@@ -163,9 +163,32 @@ def post_create_note():
     save_session(session, response)
     redirect('/index')
 
-@get('/delete/<id>')
-@get('/delete')
-def get_delete(id=None):
+@get('/edit/<id>')
+def get_edit(id):
+    session = load_session(request)
+    # if not logged in, redirect to someplace
+    if not logged_in(session):
+        redirect("/login")
+
+    # get the username from session
+    username = session.get('username', None)
+
+    # load the items
+    db = dataset.connect('sqlite:///database.db')
+    notes = db['notes']
+    items = [dict(item) for item in notes.find(id=id, user=username)]
+    if len(items) != 1:
+        print("we have a problem")
+        redirect("/login")
+    print(items[0])
+    note = items[0]['note']
+
+    # display the edit page
+    save_session(session, response)
+    return template('edit', name=username, id=id, value=note)
+
+@post('/edit/<id>')
+def post_edit(id):
     # load the session
     session = load_session(request)
 
@@ -174,10 +197,41 @@ def get_delete(id=None):
         redirect("/login")
 
     # get the username from session
-    username = session.get('username', 'guest')
+    username = session.get('username', None)
 
-    if not id:
-        id = request.params.get('id',None)
+    # get the form information
+    note = request.forms['note']
+
+    # Store the new note
+    print("the updated note is ", note)
+    item = {
+        'id':id,
+        "user":username, 
+        "note":note
+    }
+    db = dataset.connect('sqlite:///database.db')
+    notes = db['notes']
+    notes.update(item,['id','user'])
+
+    # save session
+    save_session(session, response)
+    redirect('/index')
+
+@get('/delete/<id>')
+#@get('/delete')
+def get_delete(id): #=None):
+    # load the session
+    session = load_session(request)
+
+    # if not logged in, redirect to someplace
+    if not logged_in(session):
+        redirect("/login")
+
+    # get the username from session
+    username = session.get('username', None)
+
+    #if not id:
+    #    id = request.params.get('id',None)
 
     if not id:
         redirect('/index')

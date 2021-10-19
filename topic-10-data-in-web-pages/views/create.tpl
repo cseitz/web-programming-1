@@ -1,6 +1,6 @@
 <html>
 <body>
-<h1>Create Note</h1>
+<h1>Create</h1>
 <h2>New item for {{name}}...</h2>
 <form action="/create_note" method="post">
   <hr/>
@@ -11,7 +11,7 @@
     </tr>
   </table>
   <hr/>
-  <input type="submit" value="Submit"/>
+  <input type="submit" value="Save"/>
   <hr>
   <a href="/index">Back to the items...</a>
 </form>
