@@ -76,7 +76,34 @@ CSS HTML JAVASCRIPT
 
 is something html or css a problem why or because?
 
-css selector??
+css selectors with [video explanation](https://seitz.sh/webprog/final-review?time=50.5)
+```html
+<style>
+
+.whatever { color: red; }
+#specific-div { background-color: blue; }
+div { font-size: 50px; }
+input[name="username"] { padding: 10px; }
+div > span {}
+div span {}
+div.whatever {}
+
+</style>
+
+<div class="whatever" id="specific-div">
+<input name="username">
+<input name="password">
+<div>
+	<span>
+		<p>
+			<span>
+
+            </span>
+        </p>
+    </span>
+</div>
+
+```
 
 read javascript
 	there is Ajax in javascript
