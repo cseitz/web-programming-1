@@ -1,4 +1,8 @@
 ```bash
+# Install dependencies
+npm install express
+
+# Run the static server
 node server.js
 ```
 
