@@ -40,7 +40,7 @@ app.component('review-form', {
     }
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       if (this.name === '' || this.review === '' || this.rating === null || this.recommend === null) {
         alert('Review is incomplete. Please fill out every field.')
         return
@@ -51,8 +51,14 @@ app.component('review-form', {
         review: this.review,
         rating: this.rating,
         recommend: this.recommend // solution
-
       }
+      await fetch('/api/reviews.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify([
+          productReview
+        ])
+      });
       this.$emit('review-submitted', productReview)
 
       this.name = ''
