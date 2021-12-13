@@ -52,13 +52,15 @@ app.component('review-form', {
         rating: this.rating,
         recommend: this.recommend // solution
       }
-      await fetch('/api/reviews.json', {
+      const req = await fetch('/api/reviews.json', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify([
           productReview
         ])
       });
+      // Request failed
+      if (!req.ok) return;
       this.$emit('review-submitted', productReview)
 
       this.name = ''
